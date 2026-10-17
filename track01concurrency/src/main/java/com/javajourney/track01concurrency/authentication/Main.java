@@ -15,7 +15,7 @@ public class Main {
 
         try (ExecutorService executor = Executors.newFixedThreadPool(10, factory)) {
             UserRepository userRepo = new UserRepository();
-            // Prefer ConcurrentHashMap ahead HashMap when you need avoid
+            // Prefer ConcurrentHashMap over HashMap when you need to avoid race condition
             Map<String, Map<String, String>> cache = new ConcurrentHashMap<>();
             Map<String, String> user = new ConcurrentHashMap<>();
 
