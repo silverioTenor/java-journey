@@ -33,8 +33,8 @@ public class Main {
 
                 ConcurrentSkipListSet<String> history = new ConcurrentSkipListSet<>();
 
-                history.addAll(accountOne.extract());
-                history.addAll(accountTwo.extract());
+                history.addAll(accountOne.statement());
+                history.addAll(accountTwo.statement());
 
                 history.forEach(System.out::println);
             }

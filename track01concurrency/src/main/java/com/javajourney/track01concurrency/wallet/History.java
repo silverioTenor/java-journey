@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public final class History {
+    // It is a thread-safe, ordered implementation tha doesn't allow null elements.
     private final ConcurrentSkipListSet<String> history = new ConcurrentSkipListSet<>();
 
     public History() {}

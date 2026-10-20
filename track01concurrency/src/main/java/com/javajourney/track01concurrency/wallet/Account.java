@@ -137,7 +137,7 @@ public final class Account {
         }
     }
 
-    public ConcurrentSkipListSet<String> extract() {
+    public ConcurrentSkipListSet<String> statement() {
         return history.getHistory();
     }
 
