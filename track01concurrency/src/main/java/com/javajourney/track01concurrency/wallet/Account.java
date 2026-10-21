@@ -56,8 +56,6 @@ public final class Account {
 
         lock.lock(); // ensure atomicity and avoid race condition
         try {
-            Thread.sleep(50);
-
             BigDecimal oldBalance = balance;
             balance = balance.add(amount);
 
@@ -65,8 +63,6 @@ public final class Account {
                 history.addTransaction(oldBalance, balance, amount, OperationType.DEPOSIT, this);
             }
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
@@ -87,8 +83,6 @@ public final class Account {
             if (balance.compareTo(amount) < 0) {
                 System.out.println("Insufficient balance");
             } else {
-                Thread.sleep(50);
-
                 BigDecimal oldBalance = balance;
                 balance = balance.subtract(amount);
 
@@ -97,8 +91,6 @@ public final class Account {
                 }
             }
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
@@ -106,6 +98,8 @@ public final class Account {
 
     // DeadLock-proof transfer
     public void transfer(Account to, BigDecimal amount) {
+        if (this.getId().equals(to.getId())) return;
+
         // 1. Establishes a strict locking order based on account IDs
         Account firstLock = this.id.compareTo(to.id) < 0 ? this : to;
         Account secondLock = firstLock == this ? to : this;
@@ -115,9 +109,6 @@ public final class Account {
         try {
             secondLock.getLock().lock();
             try {
-                // 3. Executes the operationType, ensuring full atomicity of the block
-                Thread.sleep(50);
-
                 BigDecimal oldBalance = balance;
                 BigDecimal toOldBalance = to.balance;
 
@@ -127,8 +118,6 @@ public final class Account {
                 history.addTransaction(oldBalance, balance, amount, OperationType.TRANSFER_OUT, this);
                 to.history.addTransaction(toOldBalance, to.balance, amount, OperationType.TRANSFER_IN, to);
 
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             } finally {
                 secondLock.getLock().unlock();
             }
